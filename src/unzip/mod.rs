@@ -436,7 +436,7 @@ fn extract_file_inner<R: Read>(
     progress_reporter.extraction_starting(&display_name);
     log::debug!(
         "Start extract of file at {:x}, length {:x}, name {}",
-        file.data_start(),
+        file.data_start().unwrap_or_default(),
         file.compressed_size(),
         display_name
     );
@@ -500,7 +500,7 @@ fn extract_file_inner<R: Read>(
     }
     log::debug!(
         "Finished extract of file at {:x}, length {:x}, name {}",
-        file.data_start(),
+        file.data_start().unwrap_or_default(),
         file.compressed_size(),
         display_name
     );
@@ -579,7 +579,8 @@ mod tests {
         let options = FileOptions::default()
             .compression_method(zip::CompressionMethod::Stored)
             .unix_permissions(0o755)
-            .with_deprecated_encryption("1Password".as_ref());
+            .with_deprecated_encryption("1Password".as_ref())
+            .unwrap();
         create_zip(file, include_a_txt, Some(options))
     }
 
